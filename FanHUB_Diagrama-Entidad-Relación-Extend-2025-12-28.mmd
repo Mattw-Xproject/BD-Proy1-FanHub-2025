@@ -1,0 +1,248 @@
+flowchart TD
+    %% --- DEFINICIÓN DE CLASES Y ESTILOS ---
+    
+    %% Entidades por grupos de color
+    classDef usuario fill:#FFCCBC,stroke:#E64A19,stroke-width:2px,color:black
+    classDef creador fill:#FFAB91,stroke:#E64A19,stroke-width:2px,color:black
+    classDef finanzas fill:#C8E6C9,stroke:#388E3C,stroke-width:2px,color:black
+    classDef contenido fill:#B3E5FC,stroke:#0277BD,stroke-width:2px,color:black
+    classDef social fill:#E1BEE7,stroke:#7B1FA2,stroke-width:2px,color:black
+    
+    %% Entidades Débiles (Borde simulado con [[ ]])
+    classDef debil fill:#FFCDD2,stroke:#D32F2F,stroke-width:3px,stroke-dasharray: 3 3,color:black
+
+    %% Relaciones Fuertes (Rombos amarillos/dorados)
+    classDef relacion fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px,color:black,shape:diamond
+
+    %% Relaciones Débiles (Rombos ANARANJADOS con borde discontinuo)
+    classDef relacionDebil fill:#FFF3E0,stroke:#EF6C00,stroke-width:3px,color:black,shape:diamond,stroke-dasharray: 5 5
+
+    %% Atributos
+    classDef atributo fill:#f4e6fb,stroke:#555,stroke-width:2px,color:black,shape:stadium
+    classDef atributoPK fill:#d6b4fc,stroke:#000,stroke-width:2px,color:black,shape:stadium,font-weight:bold
+    classDef atributoMulti fill:#f4e6fb,stroke:#555,stroke-width:2px,color:black,shape:circle, stroke-dasharray: 21 5
+
+    %% ==========================================
+    %% 1. USUARIOS Y PERFILES
+    %% ==========================================
+    Usuario[USUARIO]:::usuario
+    attr_u1([<u>id_usuario</u>]):::atributoPK
+    attr_u2([email]):::atributo
+    attr_u3([nickname]):::atributo
+    attr_u6([password]):::atributo
+    attr_u4([edad]):::atributo
+    attr_u5([país_resid]):::atributo
+    attr_u7([regist_creado_en]):::atributo
+
+    Usuario --- attr_u1
+    Usuario --- attr_u2
+    Usuario --- attr_u3
+    Usuario --- attr_u4
+    Usuario --- attr_u5
+    Usuario --- attr_u6
+    Usuario --- attr_u7
+
+    %% Herencia (Is-A)
+    rel_es{Se convierte en}:::relacion
+    Usuario -- "1" --- rel_es
+    rel_es -- "0..1" --- Creador[CREADOR]:::creador
+
+
+    %% Atributos Creador
+    attr_c1([biografía]):::atributo
+    attr_c2([cta_bancaria]):::atributo
+    attr_c3([is_nsfw]):::atributo
+    
+    %% MULTIVALORADO: Redes Sociales (Doble círculo simulado con paréntesis triples)
+    attr_c_multi(((link_red<br>_social))):::atributoMulti
+
+    Creador --- attr_c1
+    Creador --- attr_c2
+    Creador --- attr_c3
+    Creador --- attr_c_multi
+
+    %% Categoría
+    Categoria[CATEGORÍA]:::creador
+    attr_cat1([<u>id_categoria</u>]):::atributoPK
+    attr_cat2([nombre]):::atributo
+    attr_cat3([descripción]):::atributo
+    Categoria --- attr_cat1 & attr_cat2 & attr_cat3
+
+    rel_cat{Pertenece}:::relacion
+    Creador -- "N" --- rel_cat
+    rel_cat -- "1" --- Categoria
+
+    %% ==========================================
+    %% 2. FINANZAS (Suscripciones y Facturas)
+    %% ==========================================
+    
+    %% Tarjetas
+    Tarjeta[TARJETA]:::finanzas
+    attr_t1([<u>id_tarjeta</u>]):::atributoPK
+    attr_t([títular_tarj]):::atributo
+    attr_t2([últimos_4]):::atributo
+    attr_t3([fecha_exp]):::atributo
+    attr_t4([marca]):::atributo
+    Tarjeta --- attr_t1 & attr_t2 & attr_t3 & attr_t4 & attr_t
+
+    rel_tiene_t{Tiene}:::relacion
+    Usuario -- "1" --- rel_tiene_t
+    rel_tiene_t -- "N" --- Tarjeta
+
+    %% Niveles (Tiers)
+    Nivel[NIVEL]:::finanzas
+    attr_n([nombre_tier]):::atributo
+    attr_n1([<u>id_nivel</u>]):::atributoPK
+    attr_n2([precio_inicial]):::atributo
+    attr_n3([precio_mensual]):::atributo
+    attr_n4([descripción_benef]):::atributo
+    Nivel --- attr_n1 & attr_n2 & attr_n3 & attr_n4
+
+    %% SUSCRIPCIÓN
+    Suscripcion[SUSCRIPCIÓN]:::finanzas
+    %% Relaciones de Suscripción
+    rel_sus_usr{Realiza}:::relacion
+    Usuario -- "1" --- rel_sus_usr
+    rel_sus_usr -- "N" --- Suscripcion
+
+    rel_sus_niv{Aplica A}:::relacion
+    Suscripcion -- "N" --- rel_sus_niv
+    rel_sus_niv -- "1" --- Nivel
+    attr_s1([<u>id_suscripcion</u>]):::atributoPK
+    attr_s2([estado_suscrip]):::atributo
+    attr_s3([precio_orig]):::atributo
+    attr_s4([fecha_cread]):::atributo
+    attr_s5([fecha_modif]):::atributo
+    Suscripcion --- attr_s1 & attr_s2 & attr_s3
+
+    %% FACTURA (Entidad Débil)
+    Factura[[FACTURA]]:::debil
+    attr_f1([<u>id_suscripcion</u>]):::atributoPK
+    attr_f2([<u>cod_transacc<br>_correlativo</u>]):::atributoPK
+    attr_f3([monto_neto]):::atributo
+    attr_f4([impuestos]):::atributo
+    attr_f([fecha_emis]):::atributo
+    Factura --- attr_f1 & attr_f2 & attr_f3 & attr_f4 & attr_f
+
+    %% Relación Débil (Anaranjada y punteada)
+    rel_gen_fac{Genera}:::relacionDebil
+    Suscripcion -- "1" --- rel_gen_fac
+    rel_gen_fac -- "N" --- Factura
+
+    Suscripcion --- attr_s4 & attr_s5
+    %% ==========================================
+    %% 3. CONTENIDO
+    %% ==========================================
+    Publicacion[PUBLICACIÓN]:::contenido
+    attr_p1([<u>id_publicacion</u>]):::atributoPK
+    attr_p2([título]):::atributo
+    attr_p3([fecha_pub]):::atributo
+    Publicacion --- attr_p1 & attr_p2 & attr_p3
+
+    rel_pub{Sube}:::relacion
+    Creador -- "1" --- rel_pub
+    rel_pub -- "N" --- Publicacion
+
+    rel_def{Define}:::relacion
+    Creador -- "1" --- rel_def
+    rel_def -- "N" --- Nivel
+    %% Formatos Específicos
+    Video[VIDEO]:::contenido
+    attr_vid2([url_serv_stream]):::atributo
+    attr_vid([duración_seg]):::atributo
+    attr_vid1([res_máx_dispos]):::atributo
+    Video --- attr_vid2 & attr_vid1 & attr_vid
+
+    Nota[NOTA]:::contenido 
+    attr_nt([formato_resum]):::atributo
+    attr_nt1([formato_rico]):::atributo
+    Nota --- attr_nt1 & attr_nt
+
+    Imagen[IMAGEN]:::contenido
+    attr_i1([formato_img]):::atributo
+    attr_i2([dimension_px]):::atributo
+    attr_i([alt_text]):::atributo
+    Imagen --- attr_i1 & attr_i2 & attr_i
+    
+    Encuesta[ENCUESTA]:::contenido
+    attr_enc([fec_limite]):::atributo
+    Encuesta --- attr_enc
+
+    %% Opciones de Voto (Débil de Encuesta)
+    Opcion[[OPCIÓN VOTO]]:::debil
+    attr_op1([<u>id_opcion</u>]):::atributoPK
+    attr_op2([opción_texto]):::atributo
+    Opcion --- attr_op1 & attr_op2
+
+    rel_tiene_op{Tiene}:::relacionDebil
+    Encuesta -- "1" --- rel_tiene_op
+    rel_tiene_op -- "N" --> Opcion
+
+    %% Jerarquía de Contenido
+    rel_tipo{Soporta}:::relacion
+    Publicacion --- rel_tipo
+    rel_tipo --- Video
+    rel_tipo --- Nota
+    rel_tipo --- Imagen
+    rel_tipo --- Encuesta
+
+    attr_p([is_visib]):::atributo
+    Publicacion --- attr_p
+    %% ==========================================
+    %% 4. SOCIAL E INTERACCIONES
+    %% ==========================================
+    
+    %% Comentarios
+    Comentario[COMENTARIO]:::social
+    attr_com1([<u>id_comentario</u>]):::atributoPK
+    attr_com2([contenido]):::atributo
+    Comentario --- attr_com1
+    Comentario --- attr_com2
+    
+    rel_escribe{Escribe}:::relacion
+    Usuario -- "1" --- rel_escribe
+    rel_escribe -- "N" --- Comentario
+
+    rel_en{Deja}:::relacion
+    Publicacion -- "1" --- rel_en
+    rel_en -- "N" --- Comentario
+
+    rel_resp{Responde A}:::relacion
+    Comentario -- "1 (Hilo Padre)" --- rel_resp
+    rel_resp -- "N (Hilo Hijos)" --- Comentario
+
+    %% Reacciones
+
+
+    Reaccion[REACCIÓN]:::social
+    attr_reac1([fecha_interac]):::atributo
+    attr_reac2([tipo_reaccion]):::atributo
+    Reaccion --- attr_reac1 & attr_reac2
+    %% TipoReaccion[TIPO REACCIÓN]:::social
+
+    %%rel_es_de{Es De}:::relacion
+    %%TipoReaccion -- "1" --- rel_es_de
+    %%rel_es_de -- "N" --- Reaccion
+
+    attr_tr([emoji_icon]):::atributo
+    Reaccion --- attr_tr
+
+    rel_hace{Hace}:::relacion
+    Usuario -- "1" --- rel_hace
+    rel_hace -- "N" --- Reaccion
+
+    rel_recibe{Recibe}:::relacion
+    Publicacion -- "1" --- rel_recibe
+    rel_recibe -- "N" --- Reaccion
+
+    %% Insignias
+    Insignia[INSIGNIA]:::social
+    attr_ins([tipo_insig]):::atributo
+    Insignia --- attr_ins
+
+    rel_gana{Gana}:::relacion
+    attr_gana([fecha_gana]):::atributo
+    rel_gana --- attr_gana
+
+    Usuario -- "M" --- rel_gana
+    rel_gana -- "N" --- Insignia
