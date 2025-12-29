@@ -1,5 +1,9 @@
 # BD-Proy1-FanHub-2025
 FanHub, diseñó de una base de  datos robusta y bien estructurada bajo las mejores prácticas de bases de datos para asegurar una transición fluida desde el modelo conceptual(EER) al modelo relacional (SQL).
+🚀 Cómo leer este repositorio
+1.	Directorio /Modelo E_R-E V.../FanHub... .mmd: Contiene los archivos .mmd con el código fuente de las versiones 1, 2 y 4.
+2.	Archivo Modelo E_R-E V2/img/Leyenda Modelo de Diagrama ER-E V3.png: Guía rápida para entender los colores y símbolos del diagrama.
+3.	Directorio /img: Versión final en alta resolución (SVG/PNG) procesada en la fase v1.0, v2.0, v3.0 & v4.0.
 # [1.0.0] - 2025-12-27 
 
 En esta sección se documentan las tres etapas clave de nuestra metodología de diseño. Este flujo nos permitió validar primero la lógica de negocio y finalmente alcanzar la excelencia gráfica necesaria para un plano técnico de base de datos.
