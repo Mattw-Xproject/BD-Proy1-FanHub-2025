@@ -1,0 +1,29 @@
+flowchart TD
+    
+
+    %% Definición de Estilos (Idénticos al diagrama principal)
+    classDef usuario fill:#FFCCBC,stroke:#E64A19,stroke-width:2px,color:black
+    classDef finanzas fill:#C8E6C9,stroke:#388E3C,stroke-width:2px,color:black
+    classDef contenido fill:#B3E5FC,stroke:#0277BD,stroke-width:2px,color:black
+    classDef social fill:#E1BEE7,stroke:#7B1FA2,stroke-width:2px,color:black
+    
+    %% Estilos Especiales
+    classDef debil fill:#FFCDD2,stroke:#D32F2F,stroke-width:3px,stroke-dasharray: 3 3,color:black
+    classDef relDebil fill:#FFF3E0,stroke:#EF6C00,stroke-width:3px,color:black,shape:diamond,stroke-dasharray: 5 5
+    classDef isa fill:#FFFFFF,stroke:#000,stroke-width:2px,shape:invtrapezoid,color:black
+
+    %% Subgrafo para agrupar la leyenda
+    subgraph LEYENDA ["LEYENDA SEMÁNTICA"]
+        direction LR
+        
+        %% Nodos de muestra
+        L_User[Usuarios / Creadores]:::usuario
+        L_Fin[Finanzas / Pagos]:::finanzas
+        L_Cont[Contenido / Multimedia]:::contenido
+        L_Soc[Social / Interacción]:::social
+        
+        %% Nodos de notación especial
+        L_Debil[[Entidad Débil]]:::debil
+        L_Rel_Deb{Identificación}:::relDebil
+        L_ISA[\Jerarquía EER/]:::isa
+    end
